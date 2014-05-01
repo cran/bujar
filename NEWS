@@ -1,0 +1,7 @@
+                CHANGES in `bujar' VERSION 0.1-2 (12-17-2012)
+
+  o  learner = "acosso" is no longer supported. The function contain functions svd2 and La.svd2 which call entry points, which no longer exist in R-devel (3.0.0 to be) 
+                CHANGES in `bujar' VERSION 0.1-1 (01-17-2012)
+
+  o  added MCP and SCAD variable selection methods
+
