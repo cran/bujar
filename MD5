@@ -1,4 +1,4 @@
-50b5fd63ee7ac603cd8b7c0bab84fb96 *DESCRIPTION
+42faa0c9f94442fdbe6a1159182be04f *DESCRIPTION
 b38d5b54a8d253f8fc0dcc0c3b01eb00 *NAMESPACE
 e644ddd9959d3b697cfe680e1308ebc6 *NEWS
 0e5f5313430aded3548e7c83dc0f8e57 *R/bjboost.R
@@ -15,4 +15,4 @@ aaa109b26724b4b6744556db2eae0693 *R/vimpint.R
 3016bed9429aa169105e9ec0102a572e *inst/COPYRIGHTS
 dffb2661d84b251c630d4079017bc688 *man/bujar-internal.Rd
 08eb304f079624b9e6e13a41f2ab6fb5 *man/bujar-package.Rd
-e2061d7a02318759a2e40b9aa7f1702e *man/bujar.Rd
+475ed8dd754b584fc7f4df965d4c6fb4 *man/bujar.Rd

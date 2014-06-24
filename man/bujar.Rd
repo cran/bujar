@@ -128,7 +128,7 @@ a Statistical View of Boosting. \emph{Annals of Statistics} \bold{28}(2):337-374
 }
 \author{ Zhu Wang }
 \examples{
-data("wpbc", package = "mboost")
+data("wpbc", package = "TH.data")
 wpbc2 <- wpbc[, 1:12]
 wpbc2$status <- as.numeric(wpbc2$status) - 1
 fit <- bujar(y=log(wpbc2$time),cens=wpbc2$status, x= wpbc2[, -(1:2)])
