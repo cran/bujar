@@ -23,3 +23,10 @@ S3method(print, bujar)
 S3method(coef, bujar)
 S3method(predict, bujar)
 
+importFrom("grDevices", "dev.interactive", "dev.off", "postscript")
+importFrom("graphics", "barplot", "lines", "par", "plot", "points")
+importFrom("methods", "Quote", "existsFunction")
+importFrom("stats", "AIC", "cor", "fitted", "lm", "predict",
+             "quantile", "resid", "sd", "update", "var",
+             "variable.names", "weighted.mean")
+importFrom("utils", "getFromNamespace")
