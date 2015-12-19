@@ -9,6 +9,10 @@
 \alias{vim.interactions}
 \alias{diff.quot}
 \alias{rif}
+\alias{bstfit}
+\alias{predval}
+\alias{convCheck}
+
 \title{Internal bujar objects}
 \alias{.required}
 \description{Internal bujar objects.}

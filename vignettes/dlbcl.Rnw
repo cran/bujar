@@ -1,0 +1,431 @@
+\documentclass[nojss, shortnames]{jss}
+%\documentclass[article]{jss}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[english]{babel}
+\usepackage{graphicx, subfig}
+%% need no \usepackage{Sweave.sty}
+%\usepackage{natbib}
+%%\usepackage{/usr/lib/R/share/texmf/Sweave}
+% \VignetteDepends{rms, survival}
+%\VignetteIndexEntry{Survival Prediction Using Gene Expression Data (Short)}
+
+\author{Zhu Wang\\Connecticut Children's Medical Center\\University of Connecticut School of Medicine}
+
+\title{Survival Prediction Using Gene Expression Data}
+
+\Plainauthor{Zhu Wang}
+\Plaintitle{Survival Prediction Using Gene Expression Data}
+\Shorttitle{Survival Prediction}
+\Abstract{
+  This document describes applications of \proglang{R} package \pkg{bujar} for predicting 
+  survival in diffuse large B cell lymphoma treated with chemotherapy plus Rituximab using gene expression data.}
+\Keywords{survival, Buckley-James regression, prediction, boosting, variable selection}
+\Address{
+  Zhu Wang\\
+  Department of Research\\
+  Connecticut Children's Medical Center\\
+  Department of Pediatrics\\
+  University of Connecticut School of Medicine\\
+  Connecticut 06106, United States of America\\
+  E-mail: \email{zwang@connecticutchildrens.org}
+}
+
+\begin{document}
+\setkeys{Gin}{width=0.6\textwidth, keepaspectratio}
+\date{}
+\maketitle
+
+\section{Introduction}
+Researchers have been interested in predicting survival in diffuse large B cell lymphoma (DLBCL) treated with chemotherapy. We re-evaluate clinical and microarray data in \citet{Lenz:2008}. Data from two treatment plans were collected: CHOP and R-CHOP. CHOP is a combination chemotherapy with cyclophosphamide, doxorubicin, vincristine and prednisone. The current gold standard includes rituxima immunotherapy in addition to the chemotherapy (R-CHOP). It was interesting to identify genes that predict survival among patients who received CHOP also retain their prognostic power among patients who received R-CHOP. 
+Data from 181 CHOP patients (training data) are used to build predictive models and data from 233 R-CHOP patients (test data) are used to validate the models. 
+Due to the nature of high-dimensional data with 54675 probe sets or covariates, we first conduct a pre-selection procedure on the training data. This procedure filters out genes with lower variations if a sample variance for a gene was smaller than the 10th percentile for that gene. Afterwards we have 3833 remaining probe sets which were stored in the \proglang{R} package \pkg{bujar} \citep{Wang:bujar}. Test data with the same remaining genes is used for validation. 
+
+One of the challenges is that we have right censored data, as often occurred in survival data analysis. Although proportional-hazards regression is a popular option, we focus on Buckley-James (BJ) regression for high-dimensional data proposed by \cite{Wang:Wang:2010}. Essentially, BJ regression iteratively imputes the censored survival outcomes using the conditional expectation obtained from the current estimates, and the imputed survival outcomes are re-fitted with regression techniques, which in turn lead to different BJ predictive models depend on what regression model is chosen. We evaluate BJ boosting algorithms and BJ penalized regression implemented in \pkg{bujar}. To avoid overfitting, predictive modeling typically requires tuning parameter(s) selection. Tuning parameter is selected by data-driven cross-validation, unless otherwise specified. However, if twin boosting is conducted, the boosting iteration number is fixed in the second round of boosting. The analysis results can be different from \citet{Wang:Wang:2010} for two reasons. First, computer codes have been changed for BJ boosting with componentwise least squares or smoothing splines as base learner. In the current implementation since version 0.1-10, every BJ iteration uses the optimal boosting iteration obtained from the last BJ iteration if tuning parameter is selected. The change results in more sparse variable selection and also consistent with BJ boosting with trees as base learner. Second, BJ boosting (not twin boosting) with trees involves an internal random mechanism for tree model building. In the current implementation since version 0.1-10, a new parameter \texttt{rng} in function \texttt{bujar} can be used for reproducible results.
+<<echo=false,results=hide>>=
+options(prompt = "R> ", continue = " ", width = 90, digits =4, useFancyQuotes = FALSE)
+@
+<<echo=TRUE>>=
+library("bujar")
+data("chop")
+data("rchop")
+###censoring rate in the CHOP data
+sum(chop$status==0)/nrow(chop)
+@
+<<echo=TRUE>>=
+rchop <- subset(rchop, select=colnames(rchop)%in% colnames(chop))
+chop$survtime <- chop$survtime + 1 ### add 1 for log-transformation
+@
+\section{BJ Boosting with Linear Regression}
+\subsection{BJ boosting with componentwise least squares (BJ-LS)} 
+<<lin-fit, echo=TRUE, eval=F>>=
+set.seed(123)
+res.lin <- bujar(y=log(chop[,1]), cens=chop[,2], x=chop[,-(1:2)], tuning=TRUE, 
+cv=TRUE, mstop=1000)
+###number of genes selected with BJ-LS
+sum(res.lin$xselect==1)
+coef.bj <- coef(res.lin)
+###estimated non-zero coefficients (only list 10) 
+coef.bj[abs(coef.bj)>0][1:10]
+@
+<<echo=TRUE>>=
+library("survival")
+cutyear <- 3
+@
+<<echo=TRUE, eval=F>>=
+pred.bj <- predict(res.lin, newx=rchop[,-(1:2)])
+pred.bj <- exp(pred.bj) - 1
+group <- cut(pred.bj, breaks=c(-1, cutyear, 100), labels=c("high", "low"))
+dat.km <- data.frame(survtime=rchop$survtime, status = rchop$status, group=group)
+fit.diff <- survdiff(Surv(survtime, status) ~ group, data=dat.km)
+fit.diff
+@
+
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
+plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
+lty = 1:2, col=c("red","blue"))
+legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
+@
+\end{center}
+\caption{Kaplan-Meier survival curves for BJ-LS regression.}
+\end{figure}
+
+\newpage
+\subsection{BJ twin boosting with componentwise least squares} 
+
+<<lin-twin-fit, echo=TRUE, eval=F>>=
+res.lin2 <- bujar(y=log(chop[,1]), cens=chop[,2], x=chop[,-(1:2)], tuning=TRUE, 
+cv=FALSE, mstop=1000, twin=TRUE, mstop2=100)
+### number of genes selected with BJ-LS
+sum(res.lin2$xselect==1)
+coef.bj <- coef(res.lin2)
+coef.bj[abs(coef.bj)>0]
+pred.bj <- predict(res.lin2, newx=rchop[,-(1:2)])
+pred.bj <- exp(pred.bj) - 1
+group <- cut(pred.bj, breaks=c(-1, cutyear, 100), labels=c("high", "low"))
+dat.km <- data.frame(survtime=rchop$survtime, status = rchop$status, group=group)
+fit.diff <- survdiff(Surv(survtime, status) ~ group, data=dat.km)
+fit.diff
+@
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
+plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
+lty = 1:2, col=c("red","blue"))
+legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
+@
+\end{center}
+\caption{Kaplan-Meier survival curves for twin BJ-LS regression.}
+\end{figure}
+
+\newpage
+To reduce computing burden for other modeling methods, we adopted a supervised gene screening to select
+the top 100 probe sets based on univariate BJ regression.
+<<preprocess, echo=TRUE, results=hide, eval=F>>=
+library("rms")
+res <- rep(NA,ncol(chop))
+for(i in 3:ncol(chop)){
+  bjres <- try(bj(Surv(survtime, status) ~ chop[,i],data=chop, link="log"))
+  ###if BJ convergence fails, still included for further analysis
+  if(inherits(bjres, "try-error")) res[i] <- 1e-5 
+  else res[i] <- anova(bjres)[1,3]  #p-value
+}
+nsel <- 100
+### select top nsel=100 genes with most significant p-values
+chop2 <- chop[, c(1, 2, sort.list(res,decreasing=FALSE)[1:nsel])]  
+rchop2 <- rchop[, c(1, 2, sort.list(res,decreasing=FALSE)[1:nsel])]
+colnames(chop2)[-(1:2)] <- colnames(rchop2)[-(1:2)]  <- 
+paste("x",colnames(chop2)[-(1:2)],sep="")
+detach(package:rms)
+@
+
+\section{BJ LASSO}
+Within each BJ iteration, the LASSO is used to fit the imputed survival outcomes. The penalty tuning
+parameter is fixed at the 20th value in 100 penalty sequence values determined within each BJ iteration.
+<<lasso-fit, echo=TRUE, eval=F>>=
+res.lasso <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
+learner="enet2", tuning=FALSE, whichlambda=20)
+### how many genes selected by BJ-LASSO
+sum(res.lasso$xselect==1)
+###estimated non-zero coefficients (only list 10) 
+coef.bj <- coef(res.lasso)
+coef.bj[abs(coef.bj)>0][1:10]
+pred.bj <- predict(res.lasso, newx=rchop2[,-(1:2)])
+pred.bj <- exp(pred.bj) - 1
+group <- cut(pred.bj, breaks=c(-1, cutyear, 100), labels=c("high", "low"))
+dat.km <- data.frame(survtime=rchop$survtime, status = rchop$status, group=group)
+fit.diff <- survdiff(Surv(survtime, status) ~ group, data=dat.km)
+fit.diff
+@
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
+plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
+lty = 1:2, col=c("red","blue"))
+legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
+@
+\end{center}
+\caption{Kaplan-Meier survival curves for BJ-LASSO regression}
+\end{figure}
+\newpage
+\section{BJ SCAD}
+BJ-SCAD is an extension of BJ-LASSO \citep{Wang:Wang:2010, Fan:Li:2001}. Within each BJ iteration, the SCAD is used with the imputed survival outcomes. 
+The penalty tuning parameter is fixed at the 20th value in 100 penalty sequence values determined within each BJ iteration.
+<<scad-fit, echo=TRUE, eval=F>>=
+res.scad <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)],  
+learner="snet", tuning=FALSE, whichlambda=20)
+### how many genes selected by BJ-SCAD
+sum(res.scad$xselect==1)
+###estimated non-zero coefficients (only list 10) 
+coef.bj <- coef(res.scad)
+coef.bj[abs(coef.bj)>0][1:10]
+pred.bj <- predict(res.scad, newx=rchop2[,-(1:2)])
+pred.bj <- exp(pred.bj) - 1
+group <- cut(pred.bj, breaks=c(-1, cutyear, 100), labels=c("high", "low"))
+dat.km <- data.frame(survtime=rchop$survtime, status = rchop$status, group=group)
+fit.diff <- survdiff(Surv(survtime, status) ~ group, data=dat.km)
+fit.diff
+@
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
+plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
+lty = 1:2, col=c("red","blue"))
+legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
+@
+\end{center}
+\caption{Kaplan-Meier survival curves for BJ-SCAD regression.}
+\end{figure}
+\newpage
+\section{BJ Boosting with Smoothing Splines}
+\subsection{BJ boosting with componentwise smoothing splines (BJ-SM)} 
+<<sm-fit, echo=TRUE, eval=F>>=
+set.seed(123)
+res.ss <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
+learner="pspline", tuning=FALSE, cv=FALSE, mstop=100) 
+### how many genes selected by BJ smoothing splines, only list 10
+sum(res.ss$xselect==1)
+colnames(res.ss$x)[res.ss$xselect==1][1:10]
+pred.bj <- predict(res.ss, newx=rchop2[,-(1:2)])
+pred.bj <- exp(pred.bj) - 1
+group <- cut(pred.bj, breaks=c(-1, cutyear, 100), labels=c("high", "low"))
+dat.km <- data.frame(survtime=rchop$survtime, status = rchop$status, group=group)
+fit.diff <- survdiff(Surv(survtime, status) ~ group, data=dat.km)
+fit.diff
+@
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
+plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
+lty = 1:2, col=c("red","blue"))
+legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
+@
+\end{center}
+\caption{Kaplan-Meier survival curves for BJ-SM regression.}
+\end{figure}
+\newpage
+\subsection{BJ twin boosting with componentwise smoothing splines} 
+<<sm-twin-fit, echo=TRUE, eval=F>>=
+set.seed(123)
+res.ss2 <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
+learner="pspline", tuning=TRUE, cv=TRUE, mstop=100, twin=TRUE, mstop2=200)
+### how many genes selected by BJ twin smoothing splines, only list 10
+sum(res.ss2$xselect==1) 
+colnames(res.ss2$x)[res.ss2$xselect==1][1:10]
+pred.bj <- predict(res.ss2, newx=rchop2[,-(1:2)])
+pred.bj <- exp(pred.bj) - 1
+group <- cut(pred.bj, breaks=c(-1, cutyear, 100), labels=c("high", "low"))
+dat.km <- data.frame(survtime=rchop$survtime, status = rchop$status, group=group)
+fit.diff <- survdiff(Surv(survtime, status) ~ group, data=dat.km)
+fit.diff
+@
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
+plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
+lty = 1:2, col=c("red","blue"))
+legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
+@
+\end{center}
+\caption{Kaplan-Meier survival curves for twin BJ-SM regression.}
+\end{figure}
+\newpage
+\section{BJ Boosting with Regression Trees}
+\subsection{BJ boosting with regression stumps (BJ-Tree)} 
+<<tree-fit, echo=TRUE, eval=F>>=
+res.tree1 <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
+learner="tree",tuning=TRUE, cv=TRUE, mstop=1000, n.cores=2, rng=123)
+###Number of genes selected with tree, only list 10
+sum(res.tree1$xselect==1)
+colnames(res.tree1$x)[res.tree1$xselect==1][1:10]
+pred.bj <- predict(res.tree1, newx=rchop2[,-(1:2)])
+pred.bj <- exp(pred.bj) - 1
+group <- cut(pred.bj, breaks=c(-1, cutyear, 100), labels=c("high", "low"))
+dat.km <- data.frame(survtime=rchop$survtime, status = rchop$status, group=group)
+fit.diff <- survdiff(Surv(survtime, status) ~ group, data=dat.km)
+fit.diff
+@
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
+plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
+lty = 1:2, col=c("red","blue"))
+legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
+@
+\end{center}
+\caption{Kaplan-Meier survival curves for BJ-Tree regression.}
+\end{figure}
+
+\newpage
+\subsection{BJ twin boosting with regression stumps} 
+<<tree-twin-fit, echo=TRUE, eval=F>>=
+res.tree2 <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
+learner="tree", tuning=TRUE, cv=TRUE, mstop=1000, twin=TRUE, mstop2=100, 
+n.cores=2, rng=123)
+###Number of genes selected with tree, only list 10
+sum(res.tree2$xselect==1)
+colnames(res.tree2$x)[res.tree2$xselect==1][1:10]
+pred.bj <- predict(res.tree2, newx=rchop2[,-(1:2)])
+pred.bj <- exp(pred.bj) - 1
+group <- cut(pred.bj, breaks=c(-1, cutyear, 100), labels=c("high", "low"))
+dat.km <- data.frame(survtime=rchop$survtime, status = rchop$status, group=group)
+fit.diff <- survdiff(Surv(survtime, status) ~ group, data=dat.km)
+fit.diff
+@
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
+plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
+lty = 1:2, col=c("red","blue"))
+legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
+@
+\end{center}
+\caption{Kaplan-Meier survival curves for twin BJ-Tree regression.}
+\end{figure}
+\newpage
+\subsection{BJ boosting with regression trees of degree 4} 
+<<tree4-fit, echo=TRUE, eval=F>>=
+res.tree4 <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
+learner="tree",degree=4, tuning=TRUE, cv=TRUE, mstop=100, rel.inf=TRUE, 
+n.cores=2,rng=123)
+###Number of genes selected with tree, only list 10
+sum(res.tree4$xselect==1)
+colnames(res.tree4$x)[res.tree4$xselect==1][1:10]
+pred.bj <- predict(res.tree4, newx=rchop2[,-(1:2)])
+pred.bj <- exp(pred.bj) - 1
+group <- cut(pred.bj, breaks=c(-1, cutyear, 100), labels=c("high", "low"))
+dat.km <- data.frame(survtime=rchop$survtime, status = rchop$status, group=group)
+fit.diff <- survdiff(Surv(survtime, status) ~ group, data=dat.km)
+fit.diff
+@
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
+plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
+lty = 1:2, col=c("red","blue"))
+legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
+@
+\end{center}
+\caption{Kaplan-Meier survival curves for BJ-Tree (degree 4) regression.}
+\end{figure}
+
+\newpage
+Partial dependence plots can be utilized to show the impact of one or more covariates
+on the response after taking account the average effects of all other covariates in the
+model. We can generate plots for selected genes. See Figure 5 in \citet{Wang:Wang:2010}.
+\begin{figure}[htbp!]
+\begin{center}
+<<echo=TRUE, fig=TRUE, eval=F>>=
+gene <- c("x1558999_x_at", "x212713_at", "x224043_s_at", "x229839_at", 
+"x237515_at", "x237797_at", "x242758_x_at", "x244346_at")
+par(mfrow=c(2,4))
+for(i in 1:length(gene))
+plot(res.tree4$res.fit, i.var=which(colnames(res.tree4$x) == gene[i]))  
+@
+\end{center}
+\caption{Partial plots of selected genes based on BJ-Tree (degree=4) regression.}
+\end{figure}
+
+\newpage
+The two-way interaction partial plots display gene-gene interactions similar. See Figure 6 in \citet{Wang:Wang:2010}.
+<<eval= FALSE>>=
+for(i in 1:6)
+plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[i,c(1, 3)]))
+@
+
+%%% comment out the block with \iffalse and \fi
+\iffalse
+
+\begin{figure}[htbp!]
+\centering
+\subfloat[]{
+<<label=int1, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[1,c(1, 3)]))
+@
+\includegraphics[width=0.3\textwidth]{dlbcl-int1}
+}
+\qquad
+\subfloat[]{
+<<label=int2, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[2,c(1, 3)]))
+@ 
+\includegraphics[width=0.3\textwidth]{dlbcl-int2}
+}
+\\
+\subfloat[]{
+<<label=int3, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[3,c(1, 3)]))
+@ 
+\includegraphics[width=0.3\textwidth]{dlbcl-int3}
+}
+\qquad
+\subfloat[]{
+<<label=int4, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[4,c(1, 3)]))
+@ 
+\includegraphics[width=0.3\textwidth]{dlbcl-int4}
+}
+\\
+\subfloat[]{
+<<label=int5, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[5,c(1, 3)]))
+@ 
+\includegraphics[width=0.3\textwidth]{dlbcl-int5}
+}
+\qquad
+\subfloat[]{
+<<label=int6, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[6,c(1, 3)]))
+@ 
+\includegraphics[width=0.3\textwidth]{dlbcl-int6}
+}
+\caption{Gene-gene interactions based on BJ-Tree (degree=4) regression.}
+\end{figure}
+
+\fi
+%%% comment out the block
+
+%\newpage
+%------------------------------------
+%handy to include this at the end
+%------------------------------------
+%\section{SessionInfo}
+%-------------------------------------
+%<<sessionInfo>>=
+%sessionInfo();
+%@ 
+\newpage
+\bibliography{bujar}
+\end{document}
+

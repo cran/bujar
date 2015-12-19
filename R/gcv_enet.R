@@ -6,7 +6,7 @@
      mse.tr <- rep(NA, nn)
      for(i in 1:nn){
      cat("ENET GCV i=",i,"of", nn,"lambda=",tmp[i,1],"s=",tmp[i,2],"\n")
-     mse.tr[i] <- bujar(x=x, y=y, cens=cens, learner="enet", lamb=tmp[i,1], s= tmp[i,2], iter.bj=20, max.cycle=1, tol=1e-8, mimpu=NULL, glm=TRUE, tuning=TRUE, trace=TRUE)$mse.tr
+     mse.tr[i] <- bujar(x=x, y=y, cens=cens, learner="enet", lamb=tmp[i,1], s= tmp[i,2], iter.bj=20, max.cycle=1, tol=1e-8, mimpu=NULL, tuning=TRUE, trace=TRUE)$mse.tr
      }
      tmp1 <- which.min(mse.tr)
      lamb <- tmp[tmp1, 1]
