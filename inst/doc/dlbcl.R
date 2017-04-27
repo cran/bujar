@@ -59,7 +59,7 @@ cutyear <- 3
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-## lty = 1:2, col=c("red","blue"))
+## lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 ## legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 
 
@@ -85,7 +85,7 @@ cutyear <- 3
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-## lty = 1:2, col=c("red","blue"))
+## lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 ## legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 
 
@@ -132,7 +132,7 @@ cutyear <- 3
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-## lty = 1:2, col=c("red","blue"))
+## lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 ## legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 
 
@@ -159,7 +159,7 @@ cutyear <- 3
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-## lty = 1:2, col=c("red","blue"))
+## lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 ## legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 
 
@@ -185,7 +185,7 @@ cutyear <- 3
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-## lty = 1:2, col=c("red","blue"))
+## lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 ## legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 
 
@@ -211,7 +211,7 @@ cutyear <- 3
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-## lty = 1:2, col=c("red","blue"))
+## lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 ## legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 
 
@@ -236,7 +236,7 @@ cutyear <- 3
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-## lty = 1:2, col=c("red","blue"))
+## lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 ## legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 
 
@@ -262,7 +262,7 @@ cutyear <- 3
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-## lty = 1:2, col=c("red","blue"))
+## lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 ## legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 
 
@@ -288,7 +288,7 @@ cutyear <- 3
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-## lty = 1:2, col=c("red","blue"))
+## lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 ## legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 
 
@@ -343,5 +343,11 @@ cutyear <- 3
 ### code chunk number 32: int6 (eval = FALSE)
 ###################################################
 ## plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[6,c(1, 3)]))
+
+
+###################################################
+### code chunk number 33: sessionInfo
+###################################################
+sessionInfo();
 
 

@@ -39,7 +39,7 @@
 \section{Introduction}
 Researchers have been interested in predicting survival in diffuse large B cell lymphoma (DLBCL) treated with chemotherapy. We re-evaluate clinical and microarray data in \citet{Lenz:2008}. Data from two treatment plans were collected: CHOP and R-CHOP. CHOP is a combination chemotherapy with cyclophosphamide, doxorubicin, vincristine and prednisone. The current gold standard includes rituxima immunotherapy in addition to the chemotherapy (R-CHOP). It was interesting to identify genes that predict survival among patients who received CHOP also retain their prognostic power among patients who received R-CHOP. 
 Data from 181 CHOP patients (training data) are used to build predictive models and data from 233 R-CHOP patients (test data) are used to validate the models. 
-Due to the nature of high-dimensional data with 54675 probe sets or covariates, we first conduct a pre-selection procedure on the training data. This procedure filters out genes with lower variations if a sample variance for a gene was smaller than the 10th percentile for that gene. Afterwards we have 3833 remaining probe sets which were stored in the \proglang{R} package \pkg{bujar} \citep{Wang:bujar}. Test data with the same remaining genes is used for validation. 
+Due to the nature of high-dimensional data with 54675 probe sets or covariates, we first conduct a pre-selection procedure on the training data. This procedure filters out genes with lower variations if a sample variance for a gene was smaller than the 10th percentile for that gene. Details on how the data were read and pre-screened may be found in \texttt{dlbcl\_raw.R} in the vignettes directory. Afterwards we have 3833 remaining probe sets which were stored in the \proglang{R} package \pkg{bujar} \citep{Wang:bujar}. Test data with the same remaining genes is used for validation. 
 
 One of the challenges is that we have right censored data, as often occurred in survival data analysis. Although proportional-hazards regression is a popular option, we focus on Buckley-James (BJ) regression for high-dimensional data proposed by \cite{Wang:Wang:2010}. Essentially, BJ regression iteratively imputes the censored survival outcomes using the conditional expectation obtained from the current estimates, and the imputed survival outcomes are re-fitted with regression techniques, which in turn lead to different BJ predictive models depend on what regression model is chosen. We evaluate BJ boosting algorithms and BJ penalized regression implemented in \pkg{bujar}. To avoid overfitting, predictive modeling typically requires tuning parameter(s) selection. Tuning parameter is selected by data-driven cross-validation, unless otherwise specified. However, if twin boosting is conducted, the boosting iteration number is fixed in the second round of boosting. The analysis results can be different from \citet{Wang:Wang:2010} for two reasons. First, computer codes have been changed for BJ boosting with componentwise least squares or smoothing splines as base learner. In the current implementation since version 0.1-10, every BJ iteration uses the optimal boosting iteration obtained from the last BJ iteration if tuning parameter is selected. The change results in more sparse variable selection and also consistent with BJ boosting with trees as base learner. Second, BJ boosting (not twin boosting) with trees involves an internal random mechanism for tree model building. In the current implementation since version 0.1-10, a new parameter \texttt{rng} in function \texttt{bujar} can be used for reproducible results.
 <<echo=false,results=hide>>=
@@ -86,7 +86,7 @@ fit.diff
 <<echo=TRUE, fig=TRUE, eval=F>>=
 fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-lty = 1:2, col=c("red","blue"))
+lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 @
 \end{center}
@@ -115,7 +115,7 @@ fit.diff
 <<echo=TRUE, fig=TRUE, eval=F>>=
 fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-lty = 1:2, col=c("red","blue"))
+lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 @
 \end{center}
@@ -166,7 +166,7 @@ fit.diff
 <<echo=TRUE, fig=TRUE, eval=F>>=
 fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-lty = 1:2, col=c("red","blue"))
+lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 @
 \end{center}
@@ -196,7 +196,7 @@ fit.diff
 <<echo=TRUE, fig=TRUE, eval=F>>=
 fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-lty = 1:2, col=c("red","blue"))
+lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 @
 \end{center}
@@ -224,7 +224,7 @@ fit.diff
 <<echo=TRUE, fig=TRUE, eval=F>>=
 fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-lty = 1:2, col=c("red","blue"))
+lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 @
 \end{center}
@@ -251,7 +251,7 @@ fit.diff
 <<echo=TRUE, fig=TRUE, eval=F>>=
 fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-lty = 1:2, col=c("red","blue"))
+lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 @
 \end{center}
@@ -278,7 +278,7 @@ fit.diff
 <<echo=TRUE, fig=TRUE, eval=F>>=
 fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-lty = 1:2, col=c("red","blue"))
+lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 @
 \end{center}
@@ -306,7 +306,7 @@ fit.diff
 <<echo=TRUE, fig=TRUE, eval=F>>=
 fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-lty = 1:2, col=c("red","blue"))
+lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 @
 \end{center}
@@ -333,7 +333,7 @@ fit.diff
 <<echo=TRUE, fig=TRUE, eval=F>>=
 fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
-lty = 1:2, col=c("red","blue"))
+lty = 1:2, col=c("red","blue"), mark.time=TRUE)
 legend(1, .1, c("High risk", "Low risk"), lty = 1:2, col=c("red","blue"))
 @
 \end{center}
@@ -358,54 +358,54 @@ plot(res.tree4$res.fit, i.var=which(colnames(res.tree4$x) == gene[i]))
 \end{figure}
 
 \newpage
-The two-way interaction partial plots display gene-gene interactions similar. See Figure 6 in \citet{Wang:Wang:2010}.
+The two-way interaction partial plots display gene-gene interactions similar to Figure 6 in \citet{Wang:Wang:2010}.
 <<eval= FALSE>>=
 for(i in 1:6)
 plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[i,c(1, 3)]))
 @
 
-%%% comment out the block with \iffalse and \fi
+%%% for Short version, latex context between lines of \iffalse and \fi are skipped. But for Long version and to generate figures, comment out \iffalse and \fi
 \iffalse
 
 \begin{figure}[htbp!]
 \centering
 \subfloat[]{
-<<label=int1, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+<<label=int1, fig=TRUE, echo=FALSE, include=FALSE, eval=F>>=
 plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[1,c(1, 3)]))
 @
 \includegraphics[width=0.3\textwidth]{dlbcl-int1}
 }
 \qquad
 \subfloat[]{
-<<label=int2, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+<<label=int2, fig=TRUE, echo=FALSE, include=FALSE, eval=F>>=
 plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[2,c(1, 3)]))
 @ 
 \includegraphics[width=0.3\textwidth]{dlbcl-int2}
 }
 \\
 \subfloat[]{
-<<label=int3, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+<<label=int3, fig=TRUE, echo=FALSE, include=FALSE, eval=F>>=
 plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[3,c(1, 3)]))
 @ 
 \includegraphics[width=0.3\textwidth]{dlbcl-int3}
 }
 \qquad
 \subfloat[]{
-<<label=int4, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+<<label=int4, fig=TRUE, echo=FALSE, include=FALSE, eval=F>>=
 plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[4,c(1, 3)]))
 @ 
 \includegraphics[width=0.3\textwidth]{dlbcl-int4}
 }
 \\
 \subfloat[]{
-<<label=int5, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+<<label=int5, fig=TRUE, echo=FALSE, include=FALSE, eval=F>>=
 plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[5,c(1, 3)]))
 @ 
 \includegraphics[width=0.3\textwidth]{dlbcl-int5}
 }
 \qquad
 \subfloat[]{
-<<label=int6, fig=FALSE, echo=FALSE, include=FALSE, eval=F>>=
+<<label=int6, fig=TRUE, echo=FALSE, include=FALSE, eval=F>>=
 plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[6,c(1, 3)]))
 @ 
 \includegraphics[width=0.3\textwidth]{dlbcl-int6}
@@ -416,15 +416,15 @@ plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[6,c(1, 3)]
 \fi
 %%% comment out the block
 
-%\newpage
+\newpage
 %------------------------------------
 %handy to include this at the end
 %------------------------------------
-%\section{SessionInfo}
+\section{SessionInfo}
 %-------------------------------------
-%<<sessionInfo>>=
-%sessionInfo();
-%@ 
+<<sessionInfo>>=
+sessionInfo();
+@ 
 \newpage
 \bibliography{bujar}
 \end{document}
