@@ -25,6 +25,7 @@ importFrom("bst", "bst_control")
 importFrom("modeltools", "ModelEnvFormula")
 import("parallel")
 importFrom("stats", "coef")
+importFrom("survival", "survfitKM")
 
 S3method(plot, bujar)
 S3method(print, bujar)

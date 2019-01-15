@@ -28,7 +28,7 @@ chop$survtime <- chop$survtime + 1 ### add 1 for log-transformation
 ###################################################
 ## set.seed(123)
 ## res.lin <- bujar(y=log(chop[,1]), cens=chop[,2], x=chop[,-(1:2)], tuning=TRUE, 
-## cv=TRUE, mstop=1000)
+## cv=TRUE, n.cores=1, mstop=1000)
 ## ###number of genes selected with BJ-LS
 ## sum(res.lin$xselect==1)
 ## coef.bj <- coef(res.lin)
@@ -194,7 +194,7 @@ cutyear <- 3
 ###################################################
 ## set.seed(123)
 ## res.ss2 <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
-## learner="pspline", tuning=TRUE, cv=TRUE, mstop=100, twin=TRUE, mstop2=200)
+## learner="pspline", tuning=TRUE, cv=TRUE, n.cores=1, mstop=100, twin=TRUE, mstop2=200)
 ## ### how many genes selected by BJ twin smoothing splines, only list 10
 ## sum(res.ss2$xselect==1) 
 ## colnames(res.ss2$x)[res.ss2$xselect==1][1:10]
@@ -219,7 +219,7 @@ cutyear <- 3
 ### code chunk number 19: tree-fit (eval = FALSE)
 ###################################################
 ## res.tree1 <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
-## learner="tree",tuning=TRUE, cv=TRUE, mstop=1000, n.cores=2, rng=123)
+## learner="tree",tuning=TRUE, cv=TRUE, mstop=1000, n.cores=1, rng=123)
 ## ###Number of genes selected with tree, only list 10
 ## sum(res.tree1$xselect==1)
 ## colnames(res.tree1$x)[res.tree1$xselect==1][1:10]
@@ -245,7 +245,7 @@ cutyear <- 3
 ###################################################
 ## res.tree2 <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
 ## learner="tree", tuning=TRUE, cv=TRUE, mstop=1000, twin=TRUE, mstop2=100, 
-## n.cores=2, rng=123)
+## n.cores=1, rng=123)
 ## ###Number of genes selected with tree, only list 10
 ## sum(res.tree2$xselect==1)
 ## colnames(res.tree2$x)[res.tree2$xselect==1][1:10]
@@ -271,7 +271,7 @@ cutyear <- 3
 ###################################################
 ## res.tree4 <- bujar(y=log(chop2[,1]), cens=chop2[,2], x=chop2[,-(1:2)], 
 ## learner="tree",degree=4, tuning=TRUE, cv=TRUE, mstop=100, rel.inf=TRUE, 
-## n.cores=2,rng=123)
+## n.cores=1,rng=123)
 ## ###Number of genes selected with tree, only list 10
 ## sum(res.tree4$xselect==1)
 ## colnames(res.tree4$x)[res.tree4$xselect==1][1:10]

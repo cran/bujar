@@ -1,3 +1,7 @@
+                CHANGES in `bujar' VERSION 0.2-4 (05-17-2018)
+
+  o  drop bujar-package.Rd in man directory
+
                 CHANGES in `bujar' VERSION 0.2-3 (04-26-2017)
 
   o  minor changes to dlbcl.Rnw 

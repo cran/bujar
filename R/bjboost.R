@@ -1,6 +1,12 @@
 bjboost.fit <- function(y, ypred) {
-  if(!existsFunction('survfit.km'))
-    survfit.km <- getFromNamespace('survfitKM','survival')
+  #if(!existsFunction('survfit.km'))
+      #if (requireNamespace("survival", quietly = TRUE)) {
+      #   survfit.km <- survival::survfitKM
+      #} else {
+      #	      stop("survival package is needed\n")
+      ## do something else not involving survival.
+  # }
+	#  survfit.km <- getFromNamespace('survfitKM','survival')
   
   if(ncol(y) != 2)
 	stop("y is not a right-censored Surv object")
@@ -14,7 +20,13 @@ bjboost.fit <- function(y, ypred) {
 	state <- status
 	state[ehat == max(ehat)] <- 1
 	S <- structure(cbind(ehat, state), class = "Surv", type = "right")
-	KM.ehat <- survfit.km(dummystrat, S, conf.type = "none", se.fit = FALSE)
+	KM.ehat <- survfitKM(dummystrat, S, conf.type = "none", se.fit = FALSE)
+        #if (requireNamespace("survival", quietly = TRUE)) {
+	#KM.ehat <- survival::survfitKM(dummystrat, S, conf.type = "none", se.fit = FALSE)
+      #} else {
+      # 	      stop("survival package is needed\n")
+      #  }
+	#KM.ehat <- survfit.km(dummystrat, S, conf.type = "none", se.fit = FALSE)
 	n.risk <- KM.ehat$n.risk
 	surv <- KM.ehat$surv
 	repeats <- c(diff( - n.risk), n.risk[length(n.risk)])
