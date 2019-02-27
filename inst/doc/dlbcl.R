@@ -1,13 +1,13 @@
 ### R code from vignette source 'dlbcl.Rnw'
 
 ###################################################
-### code chunk number 1: dlbcl.Rnw:45-46
+### code chunk number 1: dlbcl.Rnw:42-43
 ###################################################
 options(prompt = "R> ", continue = " ", width = 90, digits =4, useFancyQuotes = FALSE)
 
 
 ###################################################
-### code chunk number 2: dlbcl.Rnw:48-53
+### code chunk number 2: dlbcl.Rnw:45-50
 ###################################################
 library("bujar")
 data("chop")
@@ -17,7 +17,7 @@ sum(chop$status==0)/nrow(chop)
 
 
 ###################################################
-### code chunk number 3: dlbcl.Rnw:55-57
+### code chunk number 3: dlbcl.Rnw:52-54
 ###################################################
 rchop <- subset(rchop, select=colnames(rchop)%in% colnames(chop))
 chop$survtime <- chop$survtime + 1 ### add 1 for log-transformation
@@ -37,14 +37,14 @@ chop$survtime <- chop$survtime + 1 ### add 1 for log-transformation
 
 
 ###################################################
-### code chunk number 5: dlbcl.Rnw:71-73
+### code chunk number 5: dlbcl.Rnw:68-70
 ###################################################
 library("survival")
 cutyear <- 3
 
 
 ###################################################
-### code chunk number 6: dlbcl.Rnw:75-81 (eval = FALSE)
+### code chunk number 6: dlbcl.Rnw:72-78 (eval = FALSE)
 ###################################################
 ## pred.bj <- predict(res.lin, newx=rchop[,-(1:2)])
 ## pred.bj <- exp(pred.bj) - 1
@@ -55,7 +55,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 7: dlbcl.Rnw:86-90 (eval = FALSE)
+### code chunk number 7: dlbcl.Rnw:83-87 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -81,7 +81,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 9: dlbcl.Rnw:115-119 (eval = FALSE)
+### code chunk number 9: dlbcl.Rnw:112-116 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -128,7 +128,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 12: dlbcl.Rnw:166-170 (eval = FALSE)
+### code chunk number 12: dlbcl.Rnw:163-167 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -155,7 +155,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 14: dlbcl.Rnw:196-200 (eval = FALSE)
+### code chunk number 14: dlbcl.Rnw:193-197 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -181,7 +181,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 16: dlbcl.Rnw:224-228 (eval = FALSE)
+### code chunk number 16: dlbcl.Rnw:221-225 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -207,7 +207,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 18: dlbcl.Rnw:251-255 (eval = FALSE)
+### code chunk number 18: dlbcl.Rnw:248-252 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -232,7 +232,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 20: dlbcl.Rnw:278-282 (eval = FALSE)
+### code chunk number 20: dlbcl.Rnw:275-279 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -258,7 +258,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 22: dlbcl.Rnw:306-310 (eval = FALSE)
+### code chunk number 22: dlbcl.Rnw:303-307 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -284,7 +284,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 24: dlbcl.Rnw:333-337 (eval = FALSE)
+### code chunk number 24: dlbcl.Rnw:330-334 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -293,60 +293,29 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 25: dlbcl.Rnw:349-354 (eval = FALSE)
+### code chunk number 25: dlbcl.Rnw:346-353 (eval = FALSE)
 ###################################################
-## gene <- c("x1558999_x_at", "x212713_at", "x224043_s_at", "x229839_at", 
+## gene <- c("x1558999_x_at", "x212713_at", "x224043_s_at", "x229839_at",
 ## "x237515_at", "x237797_at", "x242758_x_at", "x244346_at")
-## par(mfrow=c(2,4))
+## library("gridExtra")
 ## for(i in 1:length(gene))
-## plot(res.tree4$res.fit, i.var=which(colnames(res.tree4$x) == gene[i]))  
+## eval(parse(text=(paste("a", i, " <- plot(res.tree4$res.fit, 
+##                        i.var=which(colnames(res.tree4$x) == gene[i]))", sep=""))))
+## grid.arrange(a1, a2, a3, a4, a5, a6, a7, a8, ncol=4)
 
 
 ###################################################
-### code chunk number 26: dlbcl.Rnw:362-364 (eval = FALSE)
+### code chunk number 26: dlbcl.Rnw:363-368 (eval = FALSE)
 ###################################################
 ## for(i in 1:6)
-## plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[i,c(1, 3)]))
+## eval(parse(text=(paste("b", i, " <- plot(res.tree4$res.fit, 
+##                        i.var=unlist(res.tree4$interactions$rank.list[i,c(1, 3)]))", 
+## sep=""))))
+## grid.arrange(b1, b2, b3, b4, b5, b6, ncol=2)
 
 
 ###################################################
-### code chunk number 27: int1 (eval = FALSE)
-###################################################
-## plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[1,c(1, 3)]))
-
-
-###################################################
-### code chunk number 28: int2 (eval = FALSE)
-###################################################
-## plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[2,c(1, 3)]))
-
-
-###################################################
-### code chunk number 29: int3 (eval = FALSE)
-###################################################
-## plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[3,c(1, 3)]))
-
-
-###################################################
-### code chunk number 30: int4 (eval = FALSE)
-###################################################
-## plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[4,c(1, 3)]))
-
-
-###################################################
-### code chunk number 31: int5 (eval = FALSE)
-###################################################
-## plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[5,c(1, 3)]))
-
-
-###################################################
-### code chunk number 32: int6 (eval = FALSE)
-###################################################
-## plot(res.tree4$res.fit, i.var=unlist(res.tree4$interactions$rank.list[6,c(1, 3)]))
-
-
-###################################################
-### code chunk number 33: sessionInfo
+### code chunk number 27: sessionInfo
 ###################################################
 sessionInfo();
 
