@@ -1,3 +1,11 @@
+                CHANGES in `bujar' VERSION 0.2-7 (11-12-2019)
+  
+  o  no change but resubmission
+                
+                CHANGES in `bujar' VERSION 0.2-6 (11-07-2019)
+                
+  o  no change but resubmission
+
                 CHANGES in `bujar' VERSION 0.2-5 (01-30-2019)
 
   o  changes are made in vignettes/dlbcl.Rnw since the current release of package gbm plot function ignores par(mfrow=()) option. Anyhow, grid.arrange simplies the codes when used with Sweave. 

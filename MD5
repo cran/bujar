@@ -1,6 +1,6 @@
-60d6da2e809eb65ec95811a5ae69c5cf *DESCRIPTION
+7a315ceae4f099a552cab120464c7bc1 *DESCRIPTION
 91a1d3ee6c4e2add80cd2e853f363f4d *NAMESPACE
-9e6d37fbe5932eb43c09f54356302483 *NEWS
+29cfc7c31d39796950ceb0c80e07b0c4 *NEWS
 b4cc56bd8a9f135315bec36717fafcc1 *R/bjboost.R
 06a4c39fbf2c484030f794aa5ee6dc43 *R/bstfit.R
 8909f5b063dbd6199a323360f2a993c2 *R/bujar.R
@@ -14,14 +14,14 @@ b35e18d8561eb3eaa6253a6536aa6e2d *R/gamplot_out.R
 7a6d4299b899c1e811311d68d8b52eb2 *R/predval.R
 2790ca5d92eb2f956ec46ff6d3512f0a *R/rif.R
 aaa109b26724b4b6744556db2eae0693 *R/vimpint.R
-a61443bd87e23c119aa01e891baf7f15 *build/vignette.rds
+796ad9b00d9e4c8b1108bce19eef7247 *build/vignette.rds
 f523c51121906dba46f40627602cdd88 *data/chop.rda
 3fde5cfcb5ba9c8d0858045122f313f6 *data/datalist
 fbacb0ef75eb709453eabf6825a2beac *data/rchop.rda
 3016bed9429aa169105e9ec0102a572e *inst/COPYRIGHTS
 0a74c11f0f6784593ec822d5f56034c5 *inst/doc/dlbcl.R
 f359d629e0ba888673880ec4300b2667 *inst/doc/dlbcl.Rnw
-f5e27eb2fd4915383b8a8ed2da93e886 *inst/doc/dlbcl.pdf
+6aa37e130bc9fc4580feb1c1e71a6776 *inst/doc/dlbcl.pdf
 d810e695e9081fbc9fed622ab3e3b439 *inst/doc/dlbcl_raw.R
 a1644672590ef0bee442960e48ce657d *inst/doc/static_dlbcl.pdf
 47e62b252b9ee142e2f5669a1b7c9709 *inst/doc/static_dlbcl.pdf.asis
