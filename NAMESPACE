@@ -1,7 +1,4 @@
 export(bujar, gcv.enet)
-exportClasses("bujar")
-exportMethods("show")
-
 importFrom("mboost", "boost_control")
 importFrom("mboost", "mstop")
 importFrom("mboost", "cvrisk")

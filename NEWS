@@ -1,3 +1,7 @@
+                CHANGES in `bujar' VERSION 0.2-8 (06-01-2020)
+  
+  o  Warning: S4 exports gcv.enet specified in 'NAMESPACE' but not defined in package 'bujar' 
+
                 CHANGES in `bujar' VERSION 0.2-7 (11-12-2019)
   
   o  no change but resubmission
