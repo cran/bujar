@@ -80,7 +80,7 @@ rng=123, trace = FALSE)
   \item{cycleperiod}{ number of cycle of BJ iteration}
   \item{cycle.coef.diff}{ within cycle of BJ, the maximum difference of coefficients for BJ boosting}
   \item{nonconv}{ logical value. if TRUE, non-convergency}
-  \item{fnorm2}{ value of L_2 norm, can be useful to access convergencey}
+  \item{fnorm2}{ value of L_2 norm, can be useful to access convergency}
   \item{mselect}{ a vector of length of BJ iteration, each element is the tuning parameter mstop}
   \item{contype}{ 0 (converged), 1, not converged but cycle found, 2, not converged and max iteration reached.}
 }

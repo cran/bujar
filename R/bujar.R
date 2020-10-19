@@ -104,7 +104,8 @@ bujar <- function(y, cens, x, valdata = NULL, degree = 1, learner = "linear.regr
 	else mselect.now <- NULL
 	bstres <- bstfit(tuning, x, ynew, nu, mselect.now, mstop2, twin, center, interaction, degree, learner, l2, nfold, n.cores, cv, tuningSwitch, k, trace, gamma, lambda=lambda, lamb, whichlambda=whichlambda, method=method, rng)
         dat1.glm <- bstres$dat1.glm
-	mselect.now <- mselect[k] <- bstres$mselect  ###update mselect.now for next BJ iteration, and store the value
+	if(!is.null(bstres$mselect))
+    mselect.now <- mselect[k] <- bstres$mselect  ###update mselect.now for next BJ iteration, and store the value
 ### Compute predicted values and convergence criteria                                    
         predres <- predval(learner, twin, dat1.glm, b, k, x, s, mselect[k])
         Fboost <- predres$Fboost

@@ -1,3 +1,7 @@
+                CHANGES in `bujar' VERSION 0.2-9 (10-19-2020)
+  
+  o  editorial changes to Rd files
+                
                 CHANGES in `bujar' VERSION 0.2-8 (06-01-2020)
   
   o  Warning: S4 exports gcv.enet specified in 'NAMESPACE' but not defined in package 'bujar' 

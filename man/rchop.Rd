@@ -11,7 +11,7 @@ Microarray data for DLBCL patients undergoing R-CHOP treatment.
  num [1:233, 1:3835] 
 }
 \details{
-Microarray data of DLBCL of 233 patients treated with the current gold standard R-CHOP includeing rituxima immunotherapy in addition to the chematherapy CHOP.  The original data have 54675 probe sets or covariates. Due to the nature of high-dimensional data, a preselection procedure was conducted to filter out the genes to match those in \code{chop}.
+Microarray data of DLBCL of 233 patients treated with the current gold standard R-CHOP including rituxima immunotherapy in addition to the chemotherapy CHOP.  The original data have 54675 probe sets or covariates. Due to the nature of high-dimensional data, a preselection procedure was conducted to filter out the genes to match those in \code{chop}.
 The first column if the survival times. The second column is an indicator whether an the survival time was observed or right censoring occurred. 0=alive, 1=dead. There are 3833 same genes as in \code{chop}. The data set is used to validate the prediction accuracy for models developed using training data \code{chop}. 
 }
 \source{
