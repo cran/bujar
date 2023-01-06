@@ -95,7 +95,10 @@ cutyear <- 3
 ## library("rms")
 ## res <- rep(NA,ncol(chop))
 ## for(i in 3:ncol(chop)){
-##   bjres <- try(bj(Surv(survtime, status) ~ chop[,i],data=chop, link="log"))
+##   #It is possible bj function fails with the following message
+##   #  Error in exp(fit$stats["g"]) :
+##   #non-numeric argument to mathematical function
+##     bjres <- try(bj(Surv(survtime, status) ~ chop[,i],data=chop, link="log"))
 ##   ###if BJ convergence fails, still included for further analysis
 ##   if(inherits(bjres, "try-error")) res[i] <- 1e-5 
 ##   else res[i] <- anova(bjres)[1,3]  #p-value
@@ -128,7 +131,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 12: dlbcl.Rnw:163-167 (eval = FALSE)
+### code chunk number 12: dlbcl.Rnw:166-170 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -155,7 +158,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 14: dlbcl.Rnw:193-197 (eval = FALSE)
+### code chunk number 14: dlbcl.Rnw:196-200 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -181,7 +184,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 16: dlbcl.Rnw:221-225 (eval = FALSE)
+### code chunk number 16: dlbcl.Rnw:224-228 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -207,7 +210,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 18: dlbcl.Rnw:248-252 (eval = FALSE)
+### code chunk number 18: dlbcl.Rnw:251-255 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -232,7 +235,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 20: dlbcl.Rnw:275-279 (eval = FALSE)
+### code chunk number 20: dlbcl.Rnw:278-282 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -258,7 +261,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 22: dlbcl.Rnw:303-307 (eval = FALSE)
+### code chunk number 22: dlbcl.Rnw:306-310 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -284,7 +287,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 24: dlbcl.Rnw:330-334 (eval = FALSE)
+### code chunk number 24: dlbcl.Rnw:333-337 (eval = FALSE)
 ###################################################
 ## fit.surv <- survfit(Surv(survtime, status) ~ group, data=dat.km )
 ## plot(fit.surv, xlab="Year past therapy",ylab="Survival probability", 
@@ -293,7 +296,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 25: dlbcl.Rnw:346-353 (eval = FALSE)
+### code chunk number 25: dlbcl.Rnw:349-356 (eval = FALSE)
 ###################################################
 ## gene <- c("x1558999_x_at", "x212713_at", "x224043_s_at", "x229839_at",
 ## "x237515_at", "x237797_at", "x242758_x_at", "x244346_at")
@@ -305,7 +308,7 @@ cutyear <- 3
 
 
 ###################################################
-### code chunk number 26: dlbcl.Rnw:363-368 (eval = FALSE)
+### code chunk number 26: dlbcl.Rnw:366-371 (eval = FALSE)
 ###################################################
 ## for(i in 1:6)
 ## eval(parse(text=(paste("b", i, " <- plot(res.tree4$res.fit, 

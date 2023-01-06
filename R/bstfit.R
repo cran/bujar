@@ -27,7 +27,9 @@ bstfit <- function(tuning, x, ynew, nu, mselect, mstop2, twin, center, interacti
         colnames(datfit) <- c("y",colnames(x));
         if(!is.null(rng))
 	set.seed(rng)
+    sink("file")
 	dat1.glm <- gbm(y~.,data=datfit,distribution="gaussian",interaction.depth=degree,shrinkage=nu,cv.folds=nfold,n.trees=mselect,verbose=FALSE, n.cores=n.cores)
+    sink()
 	###############boosting trees################
         if(tuning && cv && tuningSwitch){
             mselect <- gbm.perf(dat1.glm,plot.it=FALSE,method="cv")
