@@ -1,0 +1,35 @@
+
+citHeader("To cite package 'bujar' in publications use:")
+
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- meta$Version
+
+bibentry(bibtype = "Manual",
+         title = "bujar: Buckley-James Regression for Survival Data with High-Dimensional Covariates",
+         author = c(person("Zhu","Wang", role = c("aut", "cre"),
+         email = "zwang145@uthsc.edu")),
+         year = year,
+         note = paste("{R} package version", vers),
+         url = "https://CRAN.R-project.org/package=bujar",
+         key = "bujar-package",
+         textVersion = paste("Zhu Wang (", year, "). bujar: Buckley-James Regression for Survival Data with High-Dimensional Covariates, ", paste("R package version", vers), ", https://CRAN.R-project.org/package=bujar", ".", sep = "")
+)
+
+bibentry(bibtype = "Article",
+         title =  "{Buckley-James Boosting for Survival Analysis with High-Dimensional Biomarker Data}",
+         author = as.person("Zhu Wang [aut], Ching-Yun Wang [aut]"),
+         journal      = "Statistical Applications in Genetics and Molecular Biology",
+         year         = "2010",
+         volume       = "9",
+         issue        = "1", 
+         pages        = "Article 24",
+         key = "bujar-article",
+         textVersion =
+         paste("Zhu Wang and Ching-Yun Wang (2010).", 
+               "Buckley-James Boosting for Survival Analysis with High-
+Dimensional Biomarker Data.",
+               "Statistical Applications in Genetics and Molecular Biology, Vol. 9 :
+Iss. 1, Article 24."),
+         )
+
+citFooter('Use ', sQuote('toBibtex(citation("bujar"))'), ' to extract BibTeX references.')

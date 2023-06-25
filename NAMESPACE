@@ -28,6 +28,7 @@ S3method(plot, bujar)
 S3method(print, bujar)
 S3method(coef, bujar)
 S3method(predict, bujar)
+S3method(summary, bujar)
 
 importFrom("grDevices", "dev.interactive", "dev.off", "postscript")
 importFrom("graphics", "barplot", "lines", "par", "plot", "points")

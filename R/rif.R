@@ -2,7 +2,7 @@
 # obtained from help(predict.smooth.spline)
 
      ## "Proof" that the derivatives are okay, by comparing with approximation
-     diff.quot <- function(x,y) {
+     diff_quot <- function(x,y) {
        ## Difference quotient (central differences where available)
        n <- length(x); i1 <- 1:2; i2 <- (n-1):n
        c(diff(y[i1]) / diff(x[i1]), (y[-i1] - y[-i2]) / (x[-i1] - x[-i2]),
@@ -14,7 +14,7 @@ rif <- function(x,y){
 # res <- rep(NA,ncol(x))
 # for (i in 1:ncol(x))
 #  res[i] <- mean((diff.quot(x[,i], y)^2))*var(x[,i])
-  res <- mean((diff.quot(x, y)^2))*var(x)
+  res <- mean((diff_quot(x, y)^2))*var(x)
  res <- sqrt(res)
  return(res)
 }   

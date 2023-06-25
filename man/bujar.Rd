@@ -2,6 +2,8 @@
 \alias{bujar}
 \alias{print.bujar}
 \alias{plot.bujar}
+\alias{coef.bujar}
+\alias{predict.bujar}
 \alias{summary.bujar}
 \title{ Buckley-James Regression }
 \description{
@@ -14,11 +16,18 @@ twin = FALSE, mstop2= 100, tuning = TRUE, cv = FALSE, nfold = 5, method = "corre
 vimpint = TRUE,gamma = 3, lambda=NULL, whichlambda=NULL, lamb = 0, s = 0.5, nk = 4, 
 wt.pow = 1, theta = NULL, rel.inf = FALSE, tol = .Machine$double.eps, n.cores= 2, 
 rng=123, trace = FALSE)
+\method{print}{bujar}(x, ...)
+\method{predict}{bujar}(object, newx=NULL, ...)
+\method{plot}{bujar}(x, ...)
+\method{coef}{bujar}(object, ...)
+\method{summary}{bujar}(object, ...)
 }
 \arguments{
   \item{y}{ survival time}
   \item{cens}{ censoring indicator, must be 0 or 1 with 0=alive, 1=dead}
   \item{x}{ covariate matrix}
+  \item{object}{ an object of class \code{"bujar"}}
+  \item{newx}{ covariate matrix for prediction}
   \item{valdata}{ test data, which must have the first column as survival time, second column as censoring indicator, and the remaining columns similar to same x.}
   \item{degree}{ mars/tree/linear regression degree of interaction; if 2, second-order interaction,
                                           if degree=1, additive model;}
@@ -51,6 +60,7 @@ rng=123, trace = FALSE)
   will attempt to send different CV folds off to different cores. Used for \code{learner="tree"}} 
   \item{rng}{ a number to be used for random number generation in boosting trees }
   \item{trace}{ logical value. If TRUE, print out interim computing results}
+  \item{\dots}{ additional arguments used in estimation methods, for instance, trees. }
 }
 \details{
  Buckley-James regression for right-censoring survival data with high-dimensional covariates. Including L_2 boosting with componentwise linear least squares, componentwise P-splines, regression trees. Other Buckley-James methods including elastic net, SCAD and MCP. \code{learner="enet"} and \code{learner="enet2"} use two different implementations of LASSO. Some of these methods are discussed in Wang and Wang (2010) and the references therein. Also see the references below.
